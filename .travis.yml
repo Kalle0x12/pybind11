@@ -208,6 +208,23 @@ script:
 - $SCRIPT_RUN_PREFIX make pytest -j 2
 - $SCRIPT_RUN_PREFIX make cpptest -j 2
 - if [ -n "$CMAKE" ]; then $SCRIPT_RUN_PREFIX make test_cmake_build; fi
+- "$SCRIPT_RUN_PREFIX pwd"
+- "$SCRIPT_RUN_PREFIX  ./install-lis.sh"
+- "$SCRIPT_RUN_PREFIX  echo $LD_LIBRARY_PATH"
+- "$SCRIPT_RUN_PREFIX pwd"
+- "$SCRIPT_RUN_PREFIX ls -alh"
+- "$SCRIPT_RUN_PREFIX echo $PYTHON"
+- "$SCRIPT_RUN_PREFIX echo $PY_CMD"
+- "$SCRIPT_RUN_PREFIX echo $CPPV"
+- "$SCRIPT_RUN_PREFIX echo $CMAKE_EXTRA_ARGS"
+- "$SCRIPT_RUN_PREFIX echo $CMAKE_INCLUDE_PATH"
+- "$SCRIPT_RUN_PREFIX pwd"
+- "$SCRIPT_RUN_PREFIX ls -alh"
+- "$SCRIPT_RUN_PREFIX ./clean.sh"
+- "$SCRIPT_RUN_PREFIX echo python$PYTHON"
+- "$SCRIPT_RUN_PREFIX echo $PY_CMD"
+- "$SCRIPT_RUN_PREFIX which $PY_CMD"
+
 after_failure: cat tests/test_cmake_build/*.log*
 after_script:
 - if [ -n "$DOCKER" ]; then docker stop "$containerid"; docker rm "$containerid"; fi

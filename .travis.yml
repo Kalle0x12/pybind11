@@ -222,9 +222,13 @@ script:
 - $SCRIPT_RUN_PREFIX ./run_test.sh $PY_CMD
 - $SCRIPT_RUN_PREFIX cat residuals.log
 - $SCRIPT_RUN_PREFIX  ./install-paralution.sh
-
-
-
+- |
+  if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+      $SCRIPT_RUN_PREFIX $PY_CMD build-paral.py build_ext --inplace
+   elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      $SCRIPT_RUN_PREFIX $PY_CMD build_mac-paral.py build_ext --inplace
+   fi
+- $SCRIPT_RUN_PREFIX ./run_test-paral.sh $PY_CMD
 
 after_failure: cat tests/test_cmake_build/*.log*
 after_script:

@@ -35,7 +35,7 @@ ext_modules = [
               # Path to pybind11 headers
               #get_pybind_include(),
               #get_pybind_include(user=True),
-              pwd + '/pybind11/include',
+              pwd + '/include/pybind11',
               pwd + '/paralution-1.1.0/build/inc'
               ],
               #extra_compile_args=["-fopenmp"],

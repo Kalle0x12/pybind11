@@ -11,5 +11,10 @@ mkdir build
 cd build
 # -DCMAKE_CXX_FLAGS="-fpermissive"
 # Dont't build examples
-cmake -DBUILD_EXAMPLES=OFF ..
+
+if [ $1 = "7" ]; then
+    cmake -DBUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-fpermissive" ..
+else
+    cmake -DBUILD_EXAMPLES=OFF ..
+fi
 make -j2

@@ -221,11 +221,7 @@ script:
 - $SCRIPT_RUN_PREFIX pwd
 - $SCRIPT_RUN_PREFIX ./run_test.sh $PY_CMD
 - $SCRIPT_RUN_PREFIX cat residuals.log
-- |
-  if [ "$GCC" = "7" ]; then
-     export CMAKE_CXX_FLAGS=-fpermissive
-  fi
-- $SCRIPT_RUN_PREFIX  ./install-paralution.sh
+- $SCRIPT_RUN_PREFIX  ./install-paralution.sh $GCC
 - |
   if [ "$TRAVIS_OS_NAME" = "linux" ]; then
       $SCRIPT_RUN_PREFIX $PY_CMD build-paral.py build_ext --inplace

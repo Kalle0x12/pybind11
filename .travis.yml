@@ -224,7 +224,7 @@ script:
 - $SCRIPT_RUN_PREFIX  ./install-paralution.sh $GCC
 - |
   if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-      $SCRIPT_RUN_PREFIX $PY_CMD build-paral.py build_ext --inplace
+      $SCRIPT_RUN_PREFIX $PY_CMD build-para.py build_ext --inplace
    elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
       $SCRIPT_RUN_PREFIX $PY_CMD build_mac-paral.py build_ext --inplace
    fi

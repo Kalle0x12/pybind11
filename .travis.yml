@@ -221,6 +221,11 @@ script:
 - $SCRIPT_RUN_PREFIX pwd
 - $SCRIPT_RUN_PREFIX ./run_test.sh $PY_CMD
 - $SCRIPT_RUN_PREFIX cat residuals.log
+- $SCRIPT_RUN_PREFIX  ./install-paralution.sh
+
+
+
+
 after_failure: cat tests/test_cmake_build/*.log*
 after_script:
 - if [ -n "$DOCKER" ]; then docker stop "$containerid"; docker rm "$containerid";

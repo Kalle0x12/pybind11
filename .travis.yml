@@ -42,17 +42,17 @@ matrix:
   - sudo: true
     services: docker
     env: PYTHON=3.6 CPP_STD=17 GCC=7
-  - os: linux
-    env: PYTHON=3.6 CPP_STD=17 CLANG=5.0
-    addons:
-      apt:
-        sources:
-        - deadsnakes
-        - llvm-toolchain-trusty-5.0
-        - ubuntu-toolchain-r-test
-        packages:
-        - python3.6-dev python3.6-venv clang-5.0 llvm-5.0-dev
-        - lld-5.0
+#  - os: linux
+#    env: PYTHON=3.6 CPP_STD=17 CLANG=5.0
+#    addons:
+#      apt:
+#        sources:
+#        - deadsnakes
+#        - llvm-toolchain-trusty-5.0
+#        - ubuntu-toolchain-r-test
+#        packages:
+#        - python3.6-dev python3.6-venv clang-5.0 llvm-5.0-dev
+#        - lld-5.0
   - os: osx
     osx_image: xcode7.3
     env: PYTHON=2.7 CPP_STD=14 CLANG CMAKE=1

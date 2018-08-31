@@ -3,51 +3,36 @@ dist: trusty
 sudo: false
 matrix:
   include:
-  # This config does a few things:
-  # - Checks C++ and Python code styles (check-style.sh and flake8).
-  # - Makes sure sphinx can build the docs without any errors or warnings.
-  # - Tests setup.py sdist and install (all header files should be present).
-  # - Makes sure that everything still works without optional deps (numpy/scipy/eigen) and
-  #   also tests the automatic discovery functions in CMake (Python version, C++ standard).
-  - os: linux
-    env: STYLE DOCS PIP
-    cache: false
-    before_install:
-    - pyenv global $(pyenv whence 2to3)  # activate all python versions
-    - PY_CMD=python3
-    - $PY_CMD -m pip install --user --upgrade pip wheel
-    install:
-    - $PY_CMD -m pip install --user --upgrade sphinx sphinx_rtd_theme breathe flake8 pep8-naming pytest
-    - curl -fsSL ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.12.linux.bin.tar.gz | tar xz
-    - export PATH="$PWD/doxygen-1.8.12/bin:$PATH"
-#    script:
-#    - tools/check-style.sh
-#    - flake8
-#    - $PY_CMD -m sphinx -W -b html docs docs/.build
-#    - |
-#      # Make sure setup.py distributes and installs all the headers
-#      $PY_CMD setup.py sdist
-#      $PY_CMD -m pip install --user -U ./dist/*
-#      installed=$($PY_CMD -c "import pybind11; print(pybind11.get_include(True) + '/pybind11')")
-#      diff -rq $installed ./include/pybind11
-#    - |
-#      # Barebones build
-#      cmake -DCMAKE_BUILD_TYPE=Debug -DPYBIND11_WERROR=ON -DDOWNLOAD_CATCH=ON
-#      make pytest -j 2
-#      make cpptest -j 2
-  # The following are regular test configurations, including optional dependencies.
-  # With regard to each other they differ in Python version, C++ standard and compiler.
+#  - os: linux
+#    env: STYLE DOCS PIP
+#    cache: false
+#    before_install:
+#    - pyenv global $(pyenv whence 2to3)
+#    - PY_CMD=python3
+#    - $PY_CMD -m pip install --user --upgrade pip wheel
+#    install:
+#    - $PY_CMD -m pip install --user --upgrade sphinx sphinx_rtd_theme breathe flake8
+#      pep8-naming pytest
+#    - curl -fsSL ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.12.linux.bin.tar.gz
+#      | tar xz
+#    - export PATH="$PWD/doxygen-1.8.12/bin:$PATH"
   - os: linux
     env: PYTHON=2.7 CPP_STD=11 GCC=4.8
     addons:
       apt:
-        packages: [cmake=2.\*, cmake-data=2.\*]
+        packages:
+        - cmake=2.\*
+        - cmake-data=2.\*
   - os: linux
     env: PYTHON=3.6 CPP_STD=11 GCC=4.8
     addons:
       apt:
-        sources: [deadsnakes]
-        packages: [python3.6-dev python3.6-venv, cmake=2.\*, cmake-data=2.\*]
+        sources:
+        - deadsnakes
+        packages:
+        - python3.6-dev python3.6-venv
+        - cmake=2.\*
+        - cmake-data=2.\*
   - sudo: true
     services: docker
     env: PYTHON=2.7 CPP_STD=14 GCC=6 CMAKE=1
@@ -61,33 +46,39 @@ matrix:
     env: PYTHON=3.6 CPP_STD=17 CLANG=5.0
     addons:
       apt:
-        sources: [deadsnakes, llvm-toolchain-trusty-5.0, ubuntu-toolchain-r-test]
-        packages: [python3.6-dev python3.6-venv clang-5.0 llvm-5.0-dev, lld-5.0]
+        sources:
+        - deadsnakes
+        - llvm-toolchain-trusty-5.0
+        - ubuntu-toolchain-r-test
+        packages:
+        - python3.6-dev python3.6-venv clang-5.0 llvm-5.0-dev
+        - lld-5.0
   - os: osx
     osx_image: xcode7.3
     env: PYTHON=2.7 CPP_STD=14 CLANG CMAKE=1
   - os: osx
     osx_image: xcode9
     env: PYTHON=3.7 CPP_STD=14 CLANG DEBUG=1
-  # Test a PyPy 2.7 build
   - os: linux
     env: PYPY=5.8 PYTHON=2.7 CPP_STD=11 GCC=4.8
     addons:
       apt:
-        packages: [libblas-dev, liblapack-dev, gfortran]
-  # Build in 32-bit mode and tests against the CMake-installed version
-  - sudo: true
-    services: docker
-    env: ARCH=i386 PYTHON=3.5 CPP_STD=14 GCC=6 INSTALL=1
-    script:
-      - |
-        $SCRIPT_RUN_PREFIX sh -c "set -e
-        cmake ${CMAKE_EXTRA_ARGS} -DPYBIND11_INSTALL=1 -DPYBIND11_TEST=0
-        make install
-        cp -a tests /pybind11-tests
-        mkdir /build-tests && cd /build-tests
-        cmake ../pybind11-tests ${CMAKE_EXTRA_ARGS} -DPYBIND11_WERROR=ON
-        make pytest -j 2"
+        packages:
+        - libblas-dev
+        - liblapack-dev
+        - gfortran
+#  - sudo: true
+#    services: docker
+#    env: ARCH=i386 PYTHON=3.5 CPP_STD=14 GCC=6 INSTALL=1
+#    script:
+#    - |
+#      $SCRIPT_RUN_PREFIX sh -c "set -e
+#      cmake ${CMAKE_EXTRA_ARGS} -DPYBIND11_INSTALL=1 -DPYBIND11_TEST=0
+#      make install
+#      cp -a tests /pybind11-tests
+#      mkdir /build-tests && cd /build-tests
+#      cmake ../pybind11-tests ${CMAKE_EXTRA_ARGS} -DPYBIND11_WERROR=ON
+#      make pytest -j 2"
 cache:
   directories:
   - $HOME/.local/bin
@@ -202,44 +193,41 @@ install:
   fi
   set +e
 script:
-- $SCRIPT_RUN_PREFIX cmake ${CMAKE_EXTRA_ARGS}
-    -DPYBIND11_PYTHON_VERSION=$PYTHON
-    -DPYBIND11_CPP_STANDARD=$CPP_STD
-    -DPYBIND11_WERROR=${WERROR:-ON}
-    -DDOWNLOAD_CATCH=${DOWNLOAD_CATCH:-ON}
+- $SCRIPT_RUN_PREFIX cmake ${CMAKE_EXTRA_ARGS} -DPYBIND11_PYTHON_VERSION=$PYTHON -DPYBIND11_CPP_STANDARD=$CPP_STD
+  -DPYBIND11_WERROR=${WERROR:-ON} -DDOWNLOAD_CATCH=${DOWNLOAD_CATCH:-ON}
 - $SCRIPT_RUN_PREFIX make pytest -j 2
 - $SCRIPT_RUN_PREFIX make cpptest -j 2
 - if [ -n "$CMAKE" ]; then $SCRIPT_RUN_PREFIX make test_cmake_build; fi
-- "$SCRIPT_RUN_PREFIX ls -alh"
-- "$SCRIPT_RUN_PREFIX pwd"
-- "$SCRIPT_RUN_PREFIX  ./install-lis.sh"
-- "$SCRIPT_RUN_PREFIX  echo $LD_LIBRARY_PATH"
-- "$SCRIPT_RUN_PREFIX pwd"
-- "$SCRIPT_RUN_PREFIX ls -alh"
-- "$SCRIPT_RUN_PREFIX echo $PYTHON"
-- "$SCRIPT_RUN_PREFIX echo $PY_CMD"
-- "$SCRIPT_RUN_PREFIX echo $CPP_STDV"
-- "$SCRIPT_RUN_PREFIX echo $CMAKE_EXTRA_ARGS"
-- "$SCRIPT_RUN_PREFIX echo $CMAKE_INCLUDE_PATH"
-- "$SCRIPT_RUN_PREFIX echo $PY_CMD"
-- "$SCRIPT_RUN_PREFIX which $PY_CMD"
+- $SCRIPT_RUN_PREFIX ls -alh
+- $SCRIPT_RUN_PREFIX pwd
+- $SCRIPT_RUN_PREFIX  ./install-lis.sh
+- $SCRIPT_RUN_PREFIX  echo $LD_LIBRARY_PATH
+- $SCRIPT_RUN_PREFIX pwd
+- $SCRIPT_RUN_PREFIX ls -alh
+- $SCRIPT_RUN_PREFIX echo $PYTHON
+- $SCRIPT_RUN_PREFIX echo $PY_CMD
+- $SCRIPT_RUN_PREFIX echo $CPP_STDV
+- $SCRIPT_RUN_PREFIX echo $CMAKE_EXTRA_ARGS
+- $SCRIPT_RUN_PREFIX echo $CMAKE_INCLUDE_PATH
+- $SCRIPT_RUN_PREFIX echo $PY_CMD
+- $SCRIPT_RUN_PREFIX which $PY_CMD
 - |
   if [ "$TRAVIS_OS_NAME" = "linux" ]; then
       $SCRIPT_RUN_PREFIX $PY_CMD build.py build_ext --inplace
    elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
       $SCRIPT_RUN_PREFIX $PY_CMD build_mac.py build_ext --inplace
    fi
-- "$SCRIPT_RUN_PREFIX ls -alh"
-- "$SCRIPT_RUN_PREFIX pwd"
-- "$SCRIPT_RUN_PREFIX ./run_test.sh $PY_CMD"
-- "$SCRIPT_RUN_PREFIX cat residuals.log"
-
+- $SCRIPT_RUN_PREFIX ls -alh
+- $SCRIPT_RUN_PREFIX pwd
+- $SCRIPT_RUN_PREFIX ./run_test.sh $PY_CMD
+- $SCRIPT_RUN_PREFIX cat residuals.log
 after_failure: cat tests/test_cmake_build/*.log*
 after_script:
-- if [ -n "$DOCKER" ]; then docker stop "$containerid"; docker rm "$containerid"; fi
+- if [ -n "$DOCKER" ]; then docker stop "$containerid"; docker rm "$containerid";
+  fi
 notifications:
   email:
-    recipients:
-      secure: da70mnM8HmZa3K78IhS4QyEdoxZkgKjqkTnKB30Qbz0qsWg9rdayUTAnk8zi5R+ik9V3NAWSdzyhsMRSB9/j9+YQFNmoa8C95tBWgTOuc2t1XHQgWyMu/32CC4wypdXe3z8pdrncG9G04GZ6Dr9zt8+Jz9LBHA693oLAO+SUgamFk0vV60kxTX6KE+HNOIEfVY6NDas2EGx1KWXxb63l83iNDr/2ax3m4mnOtm48zml5W4qsDlQiJpd0Kq4OEuMdEmro0c4dO/0BcroPqycz/Ek0WXOih03FKR3P+ed72YpmwzivO+OQm5bvay8oq9lsRn9J3/UjdePdoBdN0e62U0cshfe4Cb5IDEZHrJv03uoTQFw+NtA9KKCa7omJ3x+S3c6STYRsgBFP53HaV9ECrUbONYkOTZHBj6xzpZdVqXluTdeRxly/5lMTdYnpUW7jfNlAce6nR2RycjeGr4/Jz2EF9ZxyN4jS9VrcUyJyyOFKJm+S8mcR/nuyp9YtEK0gaS4Sjp4r4PDyS3u8TZnjeHrmpYDDek671cig9t6VoM+oSRdfYac8M2e23flYz3qGflWaosYBZ6IYhmCq4ZsXsBdvZQpa3WgbXPlPsZ1T/PHnIfDoXxOYhfKv+5nzGBL266IWdqnG15E33Pi6Bcg7I1ZIg6bEPgX8ChYlSmyNXQo=
-    on_success: always # default: change
-    on_failure: always # default: always
+    recipients: 
+secure: 0mm4pNf6eq9baChGh2HSBqsjuNTFEV1nAXD/ghclB3+dJYrf05ydFQNgxzrXcPpIYr35HHRoeeYn8nij185As/qgJN2h0+cru2kDfOwGVB0eaMCBK5/Mb3+p/zo7N8Ch8dq0FbyVd9OxcZDKinj0A/a5vVDdXHeELuhzCcUTqPFbuIkXYpQ80+ms4awtXLgee6tVwwchu4oVE8vx1fv1E3whrevxqy/Rkalu1J/bY0b/aMvUNt/x3vXv7e5i8eybMtTJIeFejLzPRPIdC2B126tdBTdWPOuRM5+3H1oM91x9BL+TeCLyjFxY5itIyrEvmeWQQBuTZRFVmtM2DwiQQJ4SFWEK+VbuilM+LLfZJEtn0kp9zQT/aSSfc1EHaLZ27UfWa9zEf4wLmWq91ug9lOojOInQBIsvJCL9e3YyE/d/iYg7H6nOlRoObFVsCDt4tw9ac2M/F47Ov6g0X3ytgSnKQpMpynHhN1OhCg+6tyLBq1GfLV3FnmvvrhfRLRxxGmvtxkC7MP1PkwxGXDuS8oUnoe3u1kK6fDtMP87SeoZvz4Fjn3hu8YPS6eAEbQQv8m2ReDHPnOqJKjQAgboWyMXnZCS/T1VDrT0iM+f1QgBoYyGXDg3DovSxQOKYirQ9h8X7AhvDaLtdmXdSKNGBOnjY2x4B7+5BuoKJ6cnUXWw=
+    on_success: always
+    on_failure: always

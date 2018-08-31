@@ -219,11 +219,18 @@ script:
 - "$SCRIPT_RUN_PREFIX echo $CPP_STDV"
 - "$SCRIPT_RUN_PREFIX echo $CMAKE_EXTRA_ARGS"
 - "$SCRIPT_RUN_PREFIX echo $CMAKE_INCLUDE_PATH"
-- "$SCRIPT_RUN_PREFIX pwd"
-- "$SCRIPT_RUN_PREFIX ls -alh"
-- "$SCRIPT_RUN_PREFIX echo python$PYTHON"
 - "$SCRIPT_RUN_PREFIX echo $PY_CMD"
 - "$SCRIPT_RUN_PREFIX which $PY_CMD"
+- |
+  if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+      $SCRIPT_RUN_PREFIX $PY_CMD build.py build_ext --inplace
+   elif [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      $SCRIPT_RUN_PREFIX $PY_CMD build_mac.py build_ext --inplace
+   fi
+- "$SCRIPT_RUN_PREFIX ls -alh"
+- "$SCRIPT_RUN_PREFIX pwd"
+- "$SCRIPT_RUN_PREFIX ./run_test.sh $PY_CMD"
+- "$SCRIPT_RUN_PREFIX cat residuals.log"
 
 after_failure: cat tests/test_cmake_build/*.log*
 after_script:

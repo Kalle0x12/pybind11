@@ -159,6 +159,7 @@ install:
     if [ -n "$DEBUG" ]; then
       PY_DEBUG="python$PYTHON-dbg python$PY-scipy-dbg"
       CMAKE_EXTRA_ARGS+=" -DPYTHON_EXECUTABLE=/usr/bin/python${PYTHON}dm"
+      PY_CMD=/usr/bin/python${PYTHON}dm
     fi
     $SCRIPT_RUN_PREFIX sh -c "for s in 0 15; do sleep \$s; \
       apt-get -qy --no-install-recommends install \

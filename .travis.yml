@@ -208,6 +208,7 @@ script:
 - $SCRIPT_RUN_PREFIX make pytest -j 2
 - $SCRIPT_RUN_PREFIX make cpptest -j 2
 - if [ -n "$CMAKE" ]; then $SCRIPT_RUN_PREFIX make test_cmake_build; fi
+- cd ..
 - "$SCRIPT_RUN_PREFIX pwd"
 - "$SCRIPT_RUN_PREFIX  ./install-lis.sh"
 - "$SCRIPT_RUN_PREFIX  echo $LD_LIBRARY_PATH"

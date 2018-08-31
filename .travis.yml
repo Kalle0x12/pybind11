@@ -155,6 +155,7 @@ install:
   # Install dependencies
   set -e
   if [ -n "$DOCKER" ]; then
+    PY_CMD=/usr/bin/python${PYTHON}
     if [ -n "$DEBUG" ]; then
       PY_DEBUG="python$PYTHON-dbg python$PY-scipy-dbg"
       CMAKE_EXTRA_ARGS+=" -DPYTHON_EXECUTABLE=/usr/bin/python${PYTHON}dm"

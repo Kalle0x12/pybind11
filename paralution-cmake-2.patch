@@ -1,0 +1,12 @@
+--- paralution-1.1.0-org/CMakeLists.txt	2016-01-19 08:14:41.000000000 +0100
++++ paralution-1.1.0/CMakeLists.txt	2018-09-01 08:31:30.733626090 +0200
+
+@@ -186,7 +186,7 @@
+ elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo" OR "${CMAKE_BUILD_TYPE}" STREQUAL "relwithdebinfo")
+   set(CXX_FLAGS "-O3 -Wall -g -fPIC")
+ else()
+-  set(CXX_FLAGS "-O3 -Wall -fPIC")
++  set(CXX_FLAGS "-O3 -Wall -fPIC -fpermissive")
+ endif()
+ 
+ # Build examples

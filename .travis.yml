@@ -41,7 +41,7 @@ matrix:
     env: PYTHON=3.5 CPP_STD=14 GCC=6 DEBUG=1
   - sudo: true
     services: docker
-    env: PYTHON=3.6 CPP_STD=17 GCC=7
+    env: PYTHON=3.6 CPP_STD=14 GCC=7
 #  - os: linux
 #    env: PYTHON=3.6 CPP_STD=17 CLANG=5.0
 #    addons:

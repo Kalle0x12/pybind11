@@ -6,7 +6,7 @@ LIS/Paralution solver Python extension with pybind11
 
 Pybind11 https://github.com/pybind/pybind11 is a lightweight header-only library
 that exposes C++ types in Python and vice versa, mainly to create Python bindings
-of existing C++ Code or as in this case of C Code. A great advantage of pybind11
+of existing C++ Code. A great advantage of pybind11
 is that Python NumPy arrays can easily be passed around between C++/C and Python
 without making deep copies.
 

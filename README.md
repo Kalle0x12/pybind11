@@ -20,6 +20,7 @@ This example shows how to call a sparse solver routine implemented with LIS/Para
 Python. A system of sparse linear equations in CSR (Compressed Sparse Row)
 representation is delivered from Python to LIS by means of a set of NumPy arrays. 
 The solution vector x of the equation A x = b is returned as a NumPy array to Python
-in place. The solver's configuration (type of solver or preconditioner and other parameters)
-is passed as a command string from Python to LIS.
+in place. The LIS solver's configuration (type of solver or preconditioner and other parameters)
+is passed as a command string from Python to LIS. The Paralution-Solver is hard-coded. An very experimental patch was applied to Paralution to test a zero copy approach.
+
 
